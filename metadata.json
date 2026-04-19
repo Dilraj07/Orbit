@@ -1,0 +1,6 @@
+{
+  "name": "Orbit",
+  "description": "A 3D situational awareness dashboard for orbital telemetry, deep space threats, and geolocated global events.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
