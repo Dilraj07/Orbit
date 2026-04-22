@@ -489,8 +489,7 @@ export default function Globe({ asteroids: initialAsteroids = [], news: initialN
           
           <button 
             onClick={() => setShowStarlink(!showStarlink)}
-            aria-pressed={showStarlink}
-            className={`w-full py-2 px-3 rounded text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer border focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none ${
+            className={`w-full py-2 px-3 rounded text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer border ${
               showStarlink 
                 ? "bg-blue-600 text-white border-blue-400 font-bold" 
                 : "bg-white/5 text-white/40 border-white/10 hover:bg-white/10 hover:border-white/20"

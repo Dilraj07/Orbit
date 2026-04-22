@@ -42,8 +42,10 @@ export async function processNewsWithAI(rawArticles: any[]): Promise<NewsEvent[]
 
     for (const item of structuredData) {
       try {
-        const blacklist = ["low earth orbit", "space", "orbital", "global", "earth", "leo", "isso", "sky"];
-        if (blacklist.includes(item.location_name?.toLowerCase()?.trim())) {
+        const blacklist = ["low earth orbit", "space", "orbital", "global", "earth", "leo", "isso", "sky", "atmosphere", "satellite"];
+        const loc = item.location_name?.toLowerCase()?.trim() || "";
+        
+        if (blacklist.some(term => loc.includes(term)) || loc.length < 3) {
           console.log("Skipping non-terrestrial geocoding for:", item.location_name);
           continue;
         }

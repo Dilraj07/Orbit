@@ -50,8 +50,13 @@ const SIMULATED_NEWS = [
 const AXIOS_CONFIG = { 
   headers: { 
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Accept': 'text/plain, */*'
-  } 
+    'Accept': 'text/plain, */*',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Cache-Control': 'no-cache',
+    'Pragma': 'no-cache',
+    'Referer': 'https://celestrak.org/'
+  },
+  timeout: 10000
 };
 
 async function geocodeLocation(location: string): Promise<{lat: number, lon: number} | null> {
