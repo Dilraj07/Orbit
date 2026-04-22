@@ -10,6 +10,9 @@ const MAJOR_LOCATIONS = [
   "Mexico City", "Buenos Aires", "San Francisco", "Seattle", "Hong Kong"
 ];
 
+const LOWER_MAJOR_LOCATIONS = MAJOR_LOCATIONS.map(loc => loc.toLowerCase());
+const LOCATION_REGEX = new RegExp(MAJOR_LOCATIONS.map(loc => loc.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'i');
+
 const SIMULATED_WORLD_NEWS: NewsEvent[] = [
   {
     title: "Orbital Debris Density Spike Detected",
@@ -48,8 +51,16 @@ export async function fetchGeocodedNews(apiKey: string): Promise<NewsEvent[]> {
     // 2. Process and Geocode articles sequentially with rate limiting (1.1s delay)
     for (const article of articles) {
       // Basic extraction: check Title and Description for major locations
-      const content = `${article.title} ${article.description}`.toLowerCase();
-      let foundLocation = MAJOR_LOCATIONS.find(loc => content.includes(loc.toLowerCase()));
+      const content = `${article.title} ${article.description}`;
+
+      let foundLocation: string | undefined;
+      if (LOCATION_REGEX.test(content)) {
+        const lowerContent = content.toLowerCase();
+        const foundIndex = LOWER_MAJOR_LOCATIONS.findIndex(loc => lowerContent.includes(loc));
+        if (foundIndex !== -1) {
+          foundLocation = MAJOR_LOCATIONS[foundIndex];
+        }
+      }
 
       // If no major location found, skip for now to maintain geocoding accuracy
       if (!foundLocation) continue;
