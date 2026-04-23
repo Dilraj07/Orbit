@@ -11,6 +11,7 @@ dotenv.config();
 import { fetchAsteroidData } from "./src/lib/nasaService.ts";
 import { fetchGeocodedNews } from "./src/lib/newsService.ts";
 import { fetchISSTelemetry } from "./src/lib/issService.ts";
+import { SatelliteTLE } from "./src/types.ts";
 
 const ESSENTIAL_TLES = [
   {
@@ -80,7 +81,7 @@ let satCache: any = null;
 let lastSatFetch = 0;
 const SAT_CACHE_DURATION = 10000; 
 
-let swarmCache: any = null;
+let swarmCache: SatelliteTLE[] | null = null;
 let lastSwarmFetch = 0;
 const SWARM_CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours
 
