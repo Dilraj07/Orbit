@@ -69,7 +69,9 @@ async function geocodeLocation(location: string): Promise<{lat: number, lon: num
     if (geoResponse.data && geoResponse.data.length > 0) {
       return { lat: parseFloat(geoResponse.data[0].lat), lon: parseFloat(geoResponse.data[0].lon) };
     }
-  } catch (err) { }
+  } catch (err) {
+    console.error(`Geocoding failed for location "${location}":`, err);
+  }
   return null;
 }
 
@@ -208,7 +210,9 @@ async function startServer() {
                 Math.round(posGd.height * 1000)
               ]);
             }
-          } catch (e) {}
+          } catch (e) {
+            console.error(`Error parsing Starlink TLE for ${lines[i].trim()}:`, e);
+          }
         }
         if (coordinates.length >= 2000) break;
       }
