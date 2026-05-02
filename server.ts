@@ -97,7 +97,8 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
-  app.use(cors());
+  const allowedOrigins = [process.env.APP_URL, 'http://localhost:3000'].filter(Boolean) as string[];
+  app.use(cors({ origin: allowedOrigins }));
   app.use(express.json());
 
   // News Pipeline API
