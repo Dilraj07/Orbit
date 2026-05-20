@@ -60,6 +60,17 @@ const AXIOS_CONFIG = {
   timeout: 10000
 };
 
+function validateLocation(location: any): string | null {
+  if (typeof location !== 'string') {
+    return null;
+  }
+  const trimmed = location.trim();
+  if (trimmed.length === 0 || trimmed.length > 100) {
+    return null;
+  }
+  return trimmed;
+}
+
 async function geocodeLocation(location: string): Promise<{lat: number, lon: number} | null> {
   try {
     const geoResponse = await axios.get(
@@ -256,9 +267,11 @@ async function startServer() {
 
   // Geocoding Proxy for news processor
   app.post("/api/news/geocode", async (req, res) => {
-    const { location } = req.body;
-    if (!location) return res.status(400).json({ error: "Location required" });
-    const result = await geocodeLocation(location);
+    const validatedLocation = validateLocation(req.body.location);
+    if (!validatedLocation) {
+      return res.status(400).json({ error: "Valid location string (1-100 chars) required" });
+    }
+    const result = await geocodeLocation(validatedLocation);
     if (result) res.json(result);
     else res.status(404).json({ error: "Not found" });
   });
