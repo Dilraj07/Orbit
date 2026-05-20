@@ -1,5 +1,6 @@
 import axios from "axios";
-import { NewsEvent } from "../types";
+// @ts-ignore
+import type { NewsEvent } from "../types.ts";
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -10,7 +11,7 @@ const MAJOR_LOCATIONS = [
   "Mexico City", "Buenos Aires", "San Francisco", "Seattle", "Hong Kong"
 ];
 
-const SIMULATED_WORLD_NEWS: NewsEvent[] = [
+export const SIMULATED_WORLD_NEWS: NewsEvent[] = [
   {
     title: "Orbital Debris Density Spike Detected",
     description: "Multi-sensor tracking confirms increased debris concentration in Sun-Synchronous Orbit (SSO).",
