@@ -186,7 +186,6 @@ async function startServer() {
         return res.json(starlinkCache);
       }
 
-      console.log("Fetching Starlink TLEs from Official GP Endpoint...");
       // Reverting to the official GP endpoint which handles better data volume
       const url = "https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle";
       const response = await axios.get(url, AXIOS_CONFIG);
