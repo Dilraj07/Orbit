@@ -141,13 +141,21 @@ async function startServer() {
 
       const response = await axios.get("https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle", AXIOS_CONFIG);
       const rawData = response.data.replace(/\r/g, "");
-      const lines = rawData.split("\n").filter((l: string) => l.trim().length > 0);
+      const lines = rawData.split("\n");
       const swarm = [];
-      for (let i = 0; i < lines.length - 2; i += 3) {
-        if (lines[i] && lines[i+1].startsWith("1 ") && lines[i+2].startsWith("2 ")) {
-          swarm.push({ name: lines[i].trim(), tle1: lines[i+1], tle2: lines[i+2] });
+      let i = 0;
+      while (i < lines.length - 2 && swarm.length < 150) {
+        const line = lines[i].trim();
+        if (line.length === 0) {
+          i++;
+          continue;
         }
-        if (swarm.length >= 150) break;
+        if (lines[i+1].startsWith("1 ") && lines[i+2].startsWith("2 ")) {
+          swarm.push({ name: line, tle1: lines[i+1], tle2: lines[i+2] });
+          i += 3;
+        } else {
+          i++;
+        }
       }
       swarmCache = swarm.length > 0 ? swarm : (swarmCache || ESSENTIAL_TLES);
       lastSwarmFetch = now;
@@ -201,14 +209,20 @@ async function startServer() {
       const url = "https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle";
       const response = await axios.get(url, AXIOS_CONFIG);
       const rawData = response.data.replace(/\r/g, "");
-      const lines = rawData.split("\n").filter((l: string) => l.trim().length > 0);
+      const lines = rawData.split("\n");
       
       const coordinates: [number, number, number][] = [];
       const date = new Date();
 
       // Limit to 2000 for performance and reliability
-      for (let i = 0; i < lines.length - 2; i += 3) {
-        if (lines[i] && lines[i+1].startsWith("1 ") && lines[i+2].startsWith("2 ")) {
+      let i = 0;
+      while (i < lines.length - 2 && coordinates.length < 2000) {
+        const line = lines[i].trim();
+        if (line.length === 0) {
+          i++;
+          continue;
+        }
+        if (lines[i+1].startsWith("1 ") && lines[i+2].startsWith("2 ")) {
           try {
             const satrec = satellite.twoline2satrec(lines[i+1], lines[i+2]);
             const positionAndVelocity = satellite.propagate(satrec, date);
@@ -222,10 +236,12 @@ async function startServer() {
               ]);
             }
           } catch (e) {
-            console.error(`Error parsing Starlink TLE for ${lines[i].trim()}:`, e);
+            console.error(`Error parsing Starlink TLE for ${line}:`, e);
           }
+          i += 3;
+        } else {
+          i++;
         }
-        if (coordinates.length >= 2000) break;
       }
 
       if (coordinates.length === 0) throw new Error("No Starlink data parsed");
